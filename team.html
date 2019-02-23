@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>MyFootball</title>
+  <meta name="description" content="MyFootball"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  
+  <div class="navbar-fixed">
+    <nav class="indigo" role="navigation">
+      <div class="nav-wrapper container">
+        <a href="./"  class="brand-logo" id="logo-container">MyFootball</a>
+        <a href="javascript:history.back()" class="sidenav-trigger">
+          <i class="material-icons">arrow_back</i>
+        </a>
+      </div>
+    </nav>
+  </div>
+  
+  <br>
+  <div id="teamInfo" class="center container">
+    
+  </div>
+  <br><br>
+  
+  <script src="js/materialize.min.js"></script>
+  <script src="js/football_api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/idb.js"></script>
+  <script src="js/database.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var urlParams = new URLSearchParams(window.location.search);
+      var id = Number(urlParams.get("id"));
+      getTeam(teamDetail+id);
+    });
+  </script>
+  
+</body>
+</html>

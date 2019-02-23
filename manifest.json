@@ -1,0 +1,17 @@
+{
+    "name": "MyFootball",
+    "short_name": "MyFootball",
+    "description": "Football Information",
+    "gcm_sender_id": "599796357560",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#1565C0",
+    "theme_color": "#1565C0",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
