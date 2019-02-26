@@ -1,72 +1,47 @@
-const CACHE_NAME = "myfootball";
-var fileToCache = [
-  "/",
-  "/manifest.json",
-  "/nav.html",
-  "/icon.png",
-  "/index.html",
-  "/images/bundes.jpg",
-  "/images/laliga.jpg",
-  "/pages/home.html",
-  "/pages/bundes.html",
-  "/pages/laliga.html",
-  "/pages/favorite.html",
-  "/team.html",
-  "/css/materialize.min.css",
-  "/js/materialize.min.js",
-  "/js/nav.js",
-  "/js/football_api.js",
-  "/js/idb.js",
-  "/js/database.js"
-];
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js');
+
+if (workbox) {
+  console.log(`Workbox berhasil dimuat`);
+  workbox.precaching.precacheAndRoute([
+    { url: "/", revision: '1' },
+    { url: "/manifest.json", revision: '1' },
+    { url: "/nav.html", revision: '1' },
+    { url: "/icon.png", revision: '1' },
+    { url: "/index.html", revision: '1' },
+    { url: "/images/bundes.jpg", revision: '1' },
+    { url: "/images/laliga.jpg", revision: '1' },
+    { url: "/pages/home.html", revision: '1' },
+    { url: "/pages/bundes.html", revision: '1' },
+    { url: "/pages/laliga.html", revision: '1' },
+    { url: "/pages/favorite.html", revision: '1' },
+    { url: "/team.html", revision: '1' },
+    { url: "/css/materialize.min.css", revision: '1' },
+    { url: "/js/materialize.min.js", revision: '1' },
+    { url: "/js/nav.js", revision: '1' },
+    { url: "/js/football_api.js", revision: '1' },
+    { url: "/js/idb.js", revision: '1' },
+    { url: "/js/database.js", revision: '1' },
+  ]);
+  
+  workbox.routing.registerRoute(
+    new RegExp('/pages/'),
+    workbox.strategies.staleWhileRevalidate()
+  );
+  
+  workbox.routing.registerRoute(
+    new RegExp('/'),
+    workbox.strategies.staleWhileRevalidate()
+  );
+
+  workbox.routing.registerRoute(
+     new RegExp('https://api.football-data.org/v2/'),
+     workbox.strategies.staleWhileRevalidate()
+   );
  
-self.addEventListener("install", function(event) {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(fileToCache);
-    })
-  );
-});
-
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request, {cacheName:CACHE_NAME})
-    .then(function(response) {
-      if (response) {
-        return response;
-      }
-      var fetchRequest = event.request.clone();
-      return fetch(fetchRequest).then(
-        function(response) {
-          if(!response || response.status !== 200) {
-            return response;
-          }
-          var responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-          .then(function(cache) {
-            cache.put(event.request, responseToCache);
-          });
-          return response;
-        }
-      );
-    })
-  );
-});
-
-self.addEventListener('activate', function(event) {
-  console.log('Aktivasi service worker baru');
-  event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          if (cacheName !== CACHE_NAME && cacheName.startsWith("myfootball")) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
+}
+else {
+  console.log(`Workbox gagal dimuat`);
+}
 
 self.addEventListener('push', function(event) {
   var body;

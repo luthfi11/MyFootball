@@ -1,0 +1,5 @@
+Firebase deploy :
+https://myfootball-pwa.firebaseapp.com/
+
+Github repo :
+https://github.com/luthfi11/MyFootball
