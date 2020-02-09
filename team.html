@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-  
   <div class="navbar-fixed">
     <nav class="indigo" role="navigation">
       <div class="nav-wrapper container">
@@ -22,16 +21,15 @@
   </div>
   
   <br>
-  <div id="teamInfo" class="center container">
-    
-  </div>
+  <div id="loader" class="center"></div>
+  <div id="teamInfo" class="center container"></div>
   <br><br>
   
   <script src="js/materialize.min.js"></script>
   <script src="js/football_api.js"></script>
-  <script src="js/nav.js"></script>
   <script src="js/idb.js"></script>
   <script src="js/database.js"></script>
+  
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var urlParams = new URLSearchParams(window.location.search);

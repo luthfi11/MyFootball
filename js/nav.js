@@ -38,13 +38,14 @@ document.addEventListener("DOMContentLoaded", function() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4) {
+
         var content = document.querySelector("#body-content");
         if (page === "laliga") {
             getStandings(laliga_standing);
         } else if (page === "bundes") {
             getStandings(bundes_standing);
         } else if (page === "favorite") {
-            getFavoritTeam();
+            getFavoriteTeam();
         } 
         
         if (this.status == 200) {

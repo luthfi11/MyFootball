@@ -1,18 +1,62 @@
-var webPush = require('web-push');
-var pushSubscription = {
-    "endpoint": "https://android.googleapis.com/gcm/send/e38pLcybATc:APA91bF5ysrrWBGqDgUCG4RtfKEMCcPG3J5yvaGbulSxGl4hdwJCdXHQa3gcO4Oo_f5No1Ow2En7-QhHQNpgBPOXza2uJR-E89EIPd_CxtNgX5ZrOyBdQEy8kAWKUWQZIUvw_TejXI_x",
-    "keys": {
-        "p256dh": "BHtzSUHvwZRV0/cdWN666Oe+pnQSf33Y+NoXlz7Rqi0Rno17sUs95URsYXS6ZJ+XLO/y8QMpwAJ1Y/GHKa0vzyM=", 
-        "auth": "bdRX42Zoa71tPtKUiYMs4Q=="
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
     }
-};
-var payload = 'Here is a payload!';
-var options = {
-    gcmAPIKey: 'AIzaSyBan2Rr1padkxH4I2ivGjEi52mEtcdiT_E',
-    TTL: 60
-};
-webPush.sendNotification(
-    pushSubscription,
-    payload,
-    options
-);
+    return outputArray;
+}
+
+if (!('serviceWorker' in navigator)) {
+    console.log("Service worker tidak didukung browser ini.");
+}
+else {
+    registerServiceWorker();
+}
+
+function registerServiceWorker() {
+    return navigator.serviceWorker.register('/service-worker.js')
+        .then(function (registration) {
+            console.log('Registrasi service worker berhasil.');
+            if (registration.active) requestPermission();
+            return registration;
+        })
+        .catch(function (err) {
+            console.error('Registrasi service worker gagal.', err);
+        });
+}
+
+function requestPermission() {
+    if ('Notification' in window) {
+        Notification.requestPermission().then(function (result) {
+            if (result === "denied") {
+                console.log("Fitur notifikasi tidak diijinkan.");
+                return;
+            }
+            else if (result === "default") {
+                console.error("Pengguna menutup kotak dialog permintaan ijin.");
+                return;
+            }
+
+            if (('PushManager' in window)) {
+                navigator.serviceWorker.getRegistration().then(function (reg) {
+                    reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array("BNLAFFQcILLAu2fWcZyrJ4BGzG9w6RIWZoqzFJ04Q3FBOfLesIpv7m2ARkAECJvz7vKfwrg2WtSXGL_uBedPpP0")
+                    }).then(function (sub) {
+                        console.log('Berhasil melakukan subscribe dengan endpoint: ', sub.endpoint);
+                        console.log('Berhasil melakukan subscribe dengan p256dh key: ', btoa(String.fromCharCode.apply(null, new Uint8Array(sub.getKey('p256dh')))));
+                        console.log('Berhasil melakukan subscribe dengan auth key: ', btoa(String.fromCharCode.apply(null, new Uint8Array(sub.getKey('auth')))));
+
+                    }).catch(function (e) {
+                        console.error('Tidak dapat melakukan subscribe ', e);
+                    });
+                });
+            }
+        });
+    }
+}

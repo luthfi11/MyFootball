@@ -21,29 +21,20 @@ if (workbox) {
     { url: "/js/football_api.js", revision: '1' },
     { url: "/js/idb.js", revision: '1' },
     { url: "/js/database.js", revision: '1' },
-  ]);
-  
+  ], {
+    ignoreUrlParametersMatching: [/.*/]
+  });
+
   workbox.routing.registerRoute(
-    new RegExp('/pages/'),
-    workbox.strategies.staleWhileRevalidate()
-  );
-  
-  workbox.routing.registerRoute(
-    new RegExp('/'),
+    new RegExp('https://api.football-data.org/v2/'),
     workbox.strategies.staleWhileRevalidate()
   );
 
-  workbox.routing.registerRoute(
-     new RegExp('https://api.football-data.org/v2/'),
-     workbox.strategies.staleWhileRevalidate()
-   );
- 
-}
-else {
+} else {
   console.log(`Workbox gagal dimuat`);
 }
 
-self.addEventListener('push', function(event) {
+self.addEventListener('push', function (event) {
   var body;
   if (event.data) {
     body = event.data.text();
